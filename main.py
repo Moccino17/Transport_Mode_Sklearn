@@ -80,20 +80,13 @@ def generate_confusion_matrices(models):
         print(confusion_matrix(ytest, pred))
 
 
-def test_accuracy_vs_data_size(models):
-    x, y, data = load_transport_dataset()
-    cols = ['In-Vehicle Trip Time', 'Out-of-Vehicle Trip Time', 'TotalTripCost']
-    x = x.loc[:, x.columns.isin(cols)]
+def sensitivity_accuracy_vs_data_size(models):
+    x1, y1, _ = load_transport_dataset()
     for model in models:
         print(model.__class__.__name__)
-        for size in range(10, 100, 1):
-            # print(model.__class__.__name__)
-            x, xt, y, yt = train_test_split(x, y, test_size=(100 - size) / 100)
-            # cvs = cross_val_score(deepcopy(model), xt, yt, cv=10)
-            # print(np.round(np.array(cvs), 2))
-            m = deepcopy(model)
-            m.fit(x, y)
-            print(accuracy_score(yt, m.predict(xt)))
+        for size in range(1, 100):
+            x, xt, y, yt = train_test_split(x1, y1, train_size = size/100)
+            print(round(cross_val_score(deepcopy(model), x, y).mean(), 5))
 
 
 classifiers = [
